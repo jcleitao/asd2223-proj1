@@ -13,6 +13,7 @@ import protocols.pubsub.common.PublishReply;
 import protocols.pubsub.common.PublishRequest;
 import protocols.pubsub.common.SubscriptionReply;
 import protocols.pubsub.common.SubscriptionRequest;
+import protocols.pubsub.common.UnsubscriptionRequest;
 import pt.unl.fct.di.novasys.babel.core.GenericProtocol;
 import pt.unl.fct.di.novasys.babel.exceptions.HandlerRegistrationException;
 import pt.unl.fct.di.novasys.network.data.Host;
@@ -59,6 +60,8 @@ public class InteractiveApp extends GenericProtocol {
 				String[] components;
 				Scanner sc = new Scanner(System.in);
 				while(true) {
+					System.out.print("> ");
+					System.out.flush();
 					line = sc.nextLine();
 					components = line.split(" ");
 					switch(components[0]) {
@@ -68,6 +71,14 @@ public class InteractiveApp extends GenericProtocol {
 						} else {
 							SubscriptionRequest sr = new SubscriptionRequest(components[1]);
 							sendRequest(sr, pubSubProtoId);
+						}
+						break;
+					case "unsubscribe":
+						if(components.length != 2) {
+							logger.error("Usage: unsubscribe <topic>");
+						} else {
+							UnsubscriptionRequest usr = new UnsubscriptionRequest(components[1]);
+							sendRequest(usr, pubSubProtoId);
 						}
 						break;
 					case "publish":
@@ -91,6 +102,7 @@ public class InteractiveApp extends GenericProtocol {
 						logger.error("Commands:");
 						logger.error("subscribe [topic]");
 						logger.error("publish [topic] <msg-with-no-spaces>");
+						logger.error("unsubscribe [topic]");
 						logger.error("exit");
 						break;
 					}
